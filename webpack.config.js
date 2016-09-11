@@ -1,7 +1,6 @@
 /*eslint-env node */
 var path = require('path');
 var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var loaders = [
   {
@@ -12,17 +11,12 @@ var loaders = [
   {
     test: /\.css$/,
     exclude: /\.global\.css$/,
-    loader: ExtractTextPlugin.extract(
+    loaders: [
       'style?sourceMap',
-      'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
-    ),
+      'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+    ],
   },
-  {
-    test: /\.global\.css$/,
-    loader: ExtractTextPlugin.extract(
-      'css'
-    ),
-  },
+  {test: /\.global\.css$/, loader: 'style!raw'},
 ];
 
 module.exports = [{
@@ -38,7 +32,6 @@ module.exports = [{
   },
   module: {loaders: loaders},
   plugins: [
-    new ExtractTextPlugin("styles.css"),
     new webpack.optimize.UglifyJsPlugin({
       beautify: true,
       comments: true,
@@ -46,7 +39,7 @@ module.exports = [{
       compress: {
         dead_code: true,
       },
-    })
+    }),
   ],
 }, {
   entry: './src/demo.js',
@@ -55,7 +48,4 @@ module.exports = [{
     filename: 'demo.js',
   },
   module: {loaders: loaders},
-  plugins: [
-    new ExtractTextPlugin("styles.css"),
-  ],
 }];
